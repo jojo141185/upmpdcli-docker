@@ -19,8 +19,8 @@ jobs:
             name: Docker Hub README & description sync
             uses: meeDamian/sync-readme@v1.0.6
             with:
-                user: ${{ secrets.DOCKER_USERNAME }}
-                pass: ${{ secrets.DOCKER_PASSWORD }}
+                user: ${{ secrets.DOCKERHUB_USERNAME }}
+                pass: ${{ secrets.DOCKERHUB_TOKEN }}
                 slug: ${{ secrets.DOCKER_USERNAME }}/upmpdcli
                 readme: ./README.md
                 description: Easily run upmpdcli on your devices
