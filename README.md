@@ -1,51 +1,41 @@
-# upmpdcli-docker - a Docker image for upmpdcli
-
-## Reference
-
-First and foremost, the reference to the awesome project:
-
+# upmpdcli-docker: A Docker image for upmpdcli
 [An UPnP Audio Media Renderer based on MPD](https://www.lesbonscomptes.com/upmpdcli/)
+## Reference
+This repo is forked from GioF71 and modified for my needs.
 
 ## Links
-
-Source: [GitHub](https://github.com/giof71/upmpdcli-docker)  
-Images: [DockerHub](https://hub.docker.com/r/giof71/upmpdcli)
+Source: [GitHub](https://github.com/jojo141185/upmpdcli-docker)  
+Docker-Images: [DockerHub](https://hub.docker.com/r/jojo141185/upmpdcli)
 
 ## Why
-
-I prepared this Dockerfile Because I wanted to be able to install upmpdcli easily on any machine (provided the architecture is amd64 or arm). Also I wanted to be able to configure and govern the parameter easily, maybe through a webapp like Portainer.
+I prepared this Dockerfile because I wanted to be able to install upmpdcli easily on multiple machines with different architectures (amd64, arm).
 
 ## Prerequisites
-
 You need to have Docker up and running on a Linux machine, and the current user must be allowed to run containers (this usually means that the current user belongs to the "docker" group).
 
-You will also need a running instance mpd server (Music Player Daemon) on your network.  
-You might consider using my mpd-alsa docker image, at the following links:
-
-mpd-alsa-docker Source: [GitHub](https://github.com/giof71/mpd-alsa-docker)  
-mpd-alsa Images: [DockerHub](https://hub.docker.com/r/giof71/mpd-alsa)
-
 You can verify whether your user belongs to the "docker" group with the following command:
-
 `getent group | grep docker`
-
 This command will output one line if the current user does belong to the "docker" group, otherwise there will be no output.
 
-The Dockerfile and the included scripts have been tested on the following distros:
+You will also need a running instance mpd server (Music Player Daemon) on your network.  
 
-- Manjaro Linux with Gnome (amd64)
-- Asus Tinkerboard
-- Raspberry Pi 3 (but I have no reason to doubt it will also work on a Raspberry Pi 4/400)
+Consider using my Mopidy-MPD docker image:
 
-As I test the Dockerfile on more platforms, I will update this list.
+Source: [GitHub](https://github.com/jojo141185/mopidy-docker)  
+Docker-Images: [DockerHub](https://hub.docker.com/r/jojo141185/mopidy)
+
+Or alternatively, the much smaller mpd-alsa / mpd-pulseaudio docker image:
+
+Source: [GitHub](https://github.com/jojo141185/mpd-alsa-docker)  
+Docker-Images: [DockerHub](https://hub.docker.com/r/jojo141185/mpd-alsa)
 
 ## Get the image
 
-Here is the [repository](https://hub.docker.com/repository/docker/giof71/upmpdcli) on DockerHub.
+Here is the [repository](https://hub.docker.com/repository/docker/jojo141185/upmpdcli) on DockerHub.
 
 Getting the image from DockerHub is as simple as typing:
 
-`docker pull giof71/upmpdcli:stable`
+`docker pull jojo141185/upmpdcli:stable`
 
 You may want to pull the "stable" image as opposed to the "latest".
 
@@ -53,7 +43,7 @@ You may want to pull the "stable" image as opposed to the "latest".
 
 Say your mpd host is "mpd.local", you can start upmpdcli by typing
 
-`docker run -d --rm --net host -e MPD_HOST:mpd.local giof71/upmpdcli:stable`
+`docker run -d --rm --net host -e MPD_HOST:mpd.local jojo141185/upmpdcli:stable`
 
 Note that we have used the *MPD_HOST* environment variable so that upmpdcli can use the mpd instance running on *mpd.local*.
 
@@ -82,15 +72,7 @@ STARTUP_DELAY_SEC|0| Delay before starting the application. This can be useful i
 
 You can build (or rebuild) the image by opening a terminal from the root of the repository and issuing the following command:
 
-`docker build . -t giof71/upmpdcli`
+`docker build . -t jojo141185/upmpdcli`
 
 It will take very little time even on a Raspberry Pi. When it's finished, you can run the container following the previous instructions.  
 Just be careful to use the tag you have built.
-
-## Release History
-
-Release Date|Major Changes
----|---
-2022-03-12|Ubuntu version bump, fixed build-arg for base-image
-2022-02-11|Reduced docker image sizes (installation process is now in one line). Add README.md to the image in the directory `/app/doc`.
-2022-02-07|Automated builds, largely inspired to the work from [Der-Henning](https://github.com/Der-Henning/) for [this](https://github.com/GioF71/squeezelite-docker) repository.
