@@ -118,7 +118,7 @@ VOLUME /var/cache/upmpdcli
 COPY app/template/upmpdcli.conf /app/template/upmpdcli.conf
 
 COPY app/bin/run-upmpdcli.sh /app/bin/run-upmpdcli.sh
-RUN chmod u+x /app/bin/run-upmpdcli.sh
+RUN chmod +x /app/bin/run-upmpdcli.sh
 
 COPY README.md /app/doc
 
