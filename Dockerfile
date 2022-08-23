@@ -66,20 +66,43 @@ RUN apt-get remove -y \
 	software-properties-common \
   && apt-get autoremove -y
 
-# 
+# Run and generate default config file
 RUN upmpdcli -v
 
 RUN mkdir -p /app
+RUN mkdir -p /app/template
 RUN mkdir -p /app/conf
 RUN mkdir -p /app/doc
 
 RUN cp /etc/upmpdcli.conf /app/conf/original.upmpdcli.conf
 
+# Set default env variables
 ENV UPMPD_FRIENDLY_NAME upmpd
 ENV AV_FRIENDLY_NAME upmpd-av
 
 ENV MPD_HOST localhost
 ENV MPD_PORT 6600
+
+ENV STARTUP_DELAY_SEC 0
+
+ENV DEEZER_ENABLE no
+ENV DEEZER_USERNAME deezer_username
+ENV DEEZER_PASSWORD deezer_password
+
+ENV SPOTIFY_ENABLE no
+ENV SPOTIFY_USERNAME spotify_username
+ENV SPOTIFY_PASSWORD spotify_password
+ENV SPOTIFY_BITRATE 160
+
+ENV QOBUZ_ENABLE no
+ENV QOBUZ_USERNAME qobuz_username
+ENV QOBUZ_PASSWORD qobuz_password
+ENV QOBUZ_FORMAT_ID 5
+
+ENV HRA_ENABLE no
+ENV HRA_USERNAME hra_username
+ENV HRA_PASSWORD hra_password
+ENV HRA_LANG en
 
 ENV TIDAL_ENABLE no
 ENV TIDAL_USERNAME tidal_username
@@ -87,19 +110,12 @@ ENV TIDAL_PASSWORD tidal_password
 ENV TIDAL_API_TOKEN tidal_api_token
 ENV TIDAL_QUALITY low
 
-ENV QOBUZ_ENABLE no
-ENV QOBUZ_USERNAME qobuz_username
-ENV QOBUZ_PASSWORD qobuz_password
-ENV QOBUZ_FORMAT_ID 5
-
-ENV STARTUP_DELAY_SEC 0
-
 #ENV UPRCL_MEDIADIRS ""
 
 VOLUME /var/cache/upmpdcli
 #VOLUME /media-dir
 
-COPY app/conf/upmpdcli.conf /app/conf/upmpdcli.conf
+COPY app/template/upmpdcli.conf /app/template/upmpdcli.conf
 
 COPY app/bin/run-upmpdcli.sh /app/bin/run-upmpdcli.sh
 RUN chmod u+x /app/bin/run-upmpdcli.sh

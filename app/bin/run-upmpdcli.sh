@@ -1,13 +1,13 @@
 #!/bin/bash
 
-SOURCE_CONFIG_FILE=/app/conf/upmpdcli.conf
-CONFIG_FILE=/app/conf/current-upmpdcli.conf
+TEMPLATE_CONFIG_FILE=/app/template/upmpdcli.conf
+CONFIG_FILE=/app/conf/upmpdcli.conf
 
 if test -f "$CONFIG_FILE"; then 
     echo "Configuration file [$CONFIG_FILE] already exists, skipping text substitution"
 else 
     echo "Configuration file [$CONFIG_FILE] not found, creating."
-    cp $SOURCE_CONFIG_FILE $CONFIG_FILE
+    cp $TEMPLATE_CONFIG_FILE $CONFIG_FILE
     sed -i 's/UPMPD_FRIENDLY_NAME/'"$UPMPD_FRIENDLY_NAME"'/g' $CONFIG_FILE
     sed -i 's/AV_FRIENDLY_NAME/'"$AV_FRIENDLY_NAME"'/g' $CONFIG_FILE
     sed -i 's/MPD_HOST/'"$MPD_HOST"'/g' $CONFIG_FILE
