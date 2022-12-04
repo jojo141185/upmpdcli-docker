@@ -1,33 +1,49 @@
-name: Sync README.md to Docker Hub
+name: Sync description and README.md to Docker Hub
 
 on:
-    workflow_dispatch:
-        inputs:
-          logLevel:
-            description: Log level     
-            required: false
-            default: warning
-    push:
-        branches:
-            - main
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: Log level     
+        required: false
+        default: warning
+  push:
+    branches:
+      - 'main'
+    paths:
+      - README.md
+      - .github/workflows/sync-readme.yml
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - README.md
+      - .github/workflows/sync-readme.yml
+  #schedule:
+  #  - cron: '0 12 * * *' # everyday at 12am
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-    sync-readme:
+    # This workflow contains a single job called "release"
+    release:
+        # The type of runner that the job will run on
         runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-                
+
+        # Set environment variables
+        env:
+          DOCKERHUB_SLUG: ${{secrets.DOCKERHUB_USERNAME}}/upmpdcli
+          
+        # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
-        -
-            name: Checkout
-            uses: actions/checkout@v2
-        - 
-            name: Docker Hub README & description sync
-            uses: bemble/sync-readme@v1.0.0
-            with:
-                user: ${{ secrets.DOCKERHUB_USERNAME }}
-                pass: ${{ secrets.DOCKERHUB_PASSWORD }}
-                slug: ${{ secrets.DOCKERHUB_USERNAME }}/upmpdcli
-                readme: ./README.md
-                description: UPnP Audio Media Renderer based on MPD
-                
+            # Github action to get branch or tag information without the /ref/* prefix
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Docker Hub README & description sync
+          uses: peter-evans/dockerhub-description@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+            repository: ${{ secrets.DOCKERHUB_USERNAME }}/upmpdcli
+            readme-filepath: ./README.md
+            short-description: UPnP Audio Media Renderer based on MPD
