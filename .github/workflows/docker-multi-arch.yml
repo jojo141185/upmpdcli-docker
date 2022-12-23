@@ -12,7 +12,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                base: [ 'ubuntu:focal-20220302' ]
+                base: [ 'ubuntu:jammy' ]
                 
         steps:
         -
