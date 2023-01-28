@@ -1,59 +1,120 @@
 name: Publish multi-arch Docker images
 
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - main
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: Log level     
+        required: false
+        default: warning
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/**'
+      - 'docs/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/**'
+      - 'docs/**'
+  schedule:
+    - cron: '0 5 * * *' # everyday at 5am
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+    # This workflow contains a single job called "release"
     release:
+        # The type of runner that the job will run on
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
                 base: [ 'ubuntu:focal-20220302' ]
-                
+
+        # Set environment variables
+        env:
+          DOCKERHUB_SLUG: ${{secrets.DOCKERHUB_USERNAME}}/upmpdcli
+
+        # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
-        -
-            name: Checkout
-            uses: actions/checkout@v2
-        -
-            name: Set Release Tag
+            # Github action to get branch or tag information without the /ref/* prefix
+          - name: Get branch names
+            id: branch-name
+            uses: tj-actions/branch-names@v6
+
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+          - name: Checkout
+            uses: actions/checkout@v3
+
+            # GitHub Action to extract metadata (tags, labels) for Docker.
+          - name: Docker meta
+            id: docker_meta
+            uses: docker/metadata-action@v4
+            with:
+              images: |
+                ${{ env.DOCKERHUB_SLUG }}
+              tags: |
+                type=schedule,pattern=nightly
+                type=semver,pattern={{version}}
+                type=raw,value=stable,enable=${{ steps.branch-name.outputs.is_default == 'true' }}
+                type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+            
+            # GitHub Action to install QEMU static binaries.
+          - name: Set up QEMU
+            uses: docker/setup-qemu-action@v2
+
+            # GitHub Action to set up Docker Buildx.
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+            with:
+              buildkitd-flags: "--debug"
+
+          # GitHub Action to login to DockerHub.
+          -   name: Login to DockerHub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+          # GitHub Action to build and push Docker images with Buildx.
+          - name: Build
+            uses: docker/build-push-action@v3
+            with:
+              context: .
+              file: ./Dockerfile
+              platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
+              push: ${{ github.event_name != 'pull_request' }}
+              tags: ${{ steps.docker_meta.outputs.tags }}
+              no-cache: true
+              build-args: |
+                VERSION=${{ steps.docker_meta.outputs.version }} \
+                BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+                VCS_REF=${GITHUB_SHA::8}
+              labels: |
+                ${{ steps.docker_meta.outputs.labels }}
+                org.opencontainers.image.title=${{ env.DOCKERHUB_SLUG }}
+                org.opencontainers.image.description=Docker image update notifier
+                org.opencontainers.image.vendor=${{secrets.DOCKERHUB_USERNAME}}
+
+          - name: Check manifest
+            if: github.event_name != 'pull_request'
             run: |
-                date=$(date '+%Y-%m-%d')
-                base="$(cut -d ':' -f2 <<< '${{ matrix.base }}')"
-                base="$(cut -d '-' -f1 <<< ${base})"
-                upmpdcli_version="upmpdcli-1.5.12-libupnpp-0.21.0"
-                image_name="${{secrets.DOCKERHUB_USERNAME}}/upmpdcli"
-                full="${upmpdcli_version}-${base}-${date}"
-                version_and_base="${upmpdcli_version}-${base}"
-                base_only="${base}"
-                tags="${image_name}:${base_only},${image_name}:${version_and_base},${image_name}:${full},${image_name}:latest,${image_name}:stable"
-                echo "RELEASE_TAGS=${tags}" >> $GITHUB_ENV
-        -
-            name: Set up QEMU
-            uses: docker/setup-qemu-action@v1
-            with:
-                platforms: all
-        -
-            name: Set up Docker Buildx
-            id: buildx
-            uses: docker/setup-buildx-action@v1
-        -
-            name: Login to DockerHub
-            uses: docker/login-action@v1
-            with:
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }}
-        -
-            name: Build and push
-            uses: docker/build-push-action@v2
-            with:
-                context: .
-                build-args: |
-                    BASE_IMAGE=${{ matrix.base }}
-                    DOWNLOAD_FROM_SOURCEFORGE=${{ matrix.sourceforge }}
-                platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
-                push: true
-                tags: ${{ env.RELEASE_TAGS }}
+              docker buildx imagetools inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.docker_meta.outputs.version }}
+
+          - name: Inspect image
+            if: github.event_name != 'pull_request'
+            run: |
+              docker pull ${{ env.DOCKERHUB_SLUG }}:${{ steps.docker_meta.outputs.version }}
+              docker image inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.docker_meta.outputs.version }}
+
+          - name: Clear
+            if: always() && github.event_name != 'pull_request'
+            run: |
+                rm -f ${HOME}/.docker/config.json
