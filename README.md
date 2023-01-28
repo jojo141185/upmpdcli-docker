@@ -45,9 +45,10 @@ Say your mpd host is "mpd.local", you can start upmpdcli by typing
 
 `docker run -d --rm --net host -e MPD_HOST:mpd.local jojo141185/upmpdcli:stable`
 
-Note that we have used the *MPD_HOST* environment variable so that upmpdcli can use the mpd instance running on *mpd.local*.
+Note that ee need to use the *host* network so the upnp renderer can be discovered on your network.
 
-We also need to use the *host* network so the upnp renderer can be discovered on your network.
+In this line we define the *MPD_HOST* environment variable to connect upmpdcli to a running mpd instance on address *mpd.local*.
+
 
 The following table reports the currently supported environment variables / services.
 
@@ -59,36 +60,36 @@ UPMPD_FRIENDLY_NAME|upmpd|Name of the upnpd renderer
 AV_FRIENDLY_NAME|upmpd-av|Name of the upnpd renderer (av mode)
 STARTUP_DELAY_SEC|0| Delay before starting the application. This can be useful if your container is set up to start automatically.
 ---|---|---
-DEEZER_ENABLE|no|Set to yes to enable Deezer support
+DEEZER_ENABLE|false|Set to yes to enable Deezer support
 DEEZER_USERNAME|deezer_username|Your Deezer account username
 DEEZER_PASSWORD|deezer_password|Your Deezer account password
 ---|---|---
-SPOTIFY_ENABLE|no|Set to yes to enable Spotify support
+SPOTIFY_ENABLE|false|Set to yes to enable Spotify support
 SPOTIFY_USERNAME|spotify_username|Your Spotify account username
 SPOTIFY_PASSWORD|spotify_password|Your Spotify account password
 SPOTIFY_BITRATE|160|96, 160 or 320 
 ---|---|---
-QOBUZ_ENABLE|no|Set to yes to enable Qobuz support
+QOBUZ_ENABLE|false|Set to yes to enable Qobuz support
 QOBUZ_USERNAME|qobuz_username|Your Qobuz account username
 QOBUZ_PASSWORD|qobuz_password|Your Qobuz account password
 QOBUZ_FORMAT_ID|5|Qobuz format id: 5 for mp3, 7 for FLAC, 27 for hi-res
 ---|---|---
-HRA_ENABLE|no|Set to yes to enable HRA support
+HRA_ENABLE|false|Set to yes to enable HRA support
 HRA_USERNAME|hra_username|Your HRA account username
 HRA_PASSWORD|hra_password|Your HRA account password
 HRA_LANG|en|language setting (en/de)
-
-<!-- 
-### Currently Deprecated
-Tidal: upmpdcli-tidal package not available 
-
-VARIABLE|DEFAULT|NOTES
 ---|---|---
-TIDAL_ENABLE|no|Set to yes to enable Tidal support
+TIDAL_ENABLE|false|Set to yes to enable Tidal support
 TIDAL_USERNAME|tidal_username|Your Tidal account username
 TIDAL_PASSWORD|tidal_password|Your Tidal account password
 TIDAL_API_TOKEN|tidal_api_token|Your Tidal account API token
 TIDAL_QUALITY|low|Tidal quality: low, high, lossless
+
+<!-- 
+### Currently Deprecated
+
+VARIABLE|DEFAULT|NOTES
+---|---|---
 -->
 ## Build
 

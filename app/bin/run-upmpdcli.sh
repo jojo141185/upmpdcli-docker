@@ -6,14 +6,14 @@ CONFIG_FILE=/app/conf/upmpdcli.conf
 if test -f "$CONFIG_FILE"; then 
     echo "Configuration file [$CONFIG_FILE] already exists, skipping text substitution"
 else 
-    echo "Configuration file [$CONFIG_FILE] not found, creating."
+    echo "Configuration file [$CONFIG_FILE] not found, copy template."
     cp $TEMPLATE_CONFIG_FILE $CONFIG_FILE
     sed -i 's/UPMPD_FRIENDLY_NAME/'"$UPMPD_FRIENDLY_NAME"'/g' $CONFIG_FILE
     sed -i 's/AV_FRIENDLY_NAME/'"$AV_FRIENDLY_NAME"'/g' $CONFIG_FILE
     sed -i 's/MPD_HOST/'"$MPD_HOST"'/g' $CONFIG_FILE
     sed -i 's/MPD_PORT/'"$MPD_PORT"'/g' $CONFIG_FILE
     echo "Deezer Enable: $DEEZER_ENABLE"
-    if [ "$DEEZER_ENABLE" == "yes" ]; then
+    if [ "$DEEZER_ENABLE" = true ]; then
         echo "Processing Spotify settings";
         sed -i 's/\#deezeruser/deezeruser/g' $CONFIG_FILE;
         sed -i 's/\#deezerpass/deezerpass/g' $CONFIG_FILE;
@@ -21,7 +21,7 @@ else
         sed -i 's/DEEZER_PASSWORD/'"$DEEZER_PASSWORD"'/g' $CONFIG_FILE;
     fi
     echo "HRA Enable: $HRA_ENABLE"
-    if [ "$HRA_ENABLE" == "yes" ]; then
+    if [ "$HRA_ENABLE" = true ]; then
         echo "Processing HRA settings";
         sed -i 's/\#hrauser/hrauser/g' $CONFIG_FILE;
         sed -i 's/\#hrapass/hrapass/g' $CONFIG_FILE;
@@ -31,7 +31,7 @@ else
         sed -i 's/HRA_LANG/'"$HRA_LANG"'/g' $CONFIG_FILE;
     fi
     echo "Spotify Enable: $SPOTIFY_ENABLE"
-    if [ "$SPOTIFY_ENABLE" == "yes" ]; then
+    if [ "$SPOTIFY_ENABLE" = true ]; then
         echo "Processing Spotify settings";
         sed -i 's/\#spotifyuser/spotifyuser/g' $CONFIG_FILE;
         sed -i 's/\#spotifypass/spotifypass/g' $CONFIG_FILE;
@@ -41,7 +41,7 @@ else
         sed -i 's/SPOTIFY_BITRATE/'"$SPOTIFY_BITRATE"'/g' $CONFIG_FILE;
     fi
     echo "Tidal Enable: $TIDAL_ENABLE"
-    if [ "$TIDAL_ENABLE" == "yes" ]; then
+    if [ "$TIDAL_ENABLE" = true ]; then
         echo "Processing Tidal settings";
         sed -i 's/\#tidaluser/tidaluser/g' $CONFIG_FILE;
         sed -i 's/\#tidalpass/tidalpass/g' $CONFIG_FILE;
@@ -53,7 +53,7 @@ else
         sed -i 's/TIDAL_QUALITY/'"$TIDAL_QUALITY"'/g' $CONFIG_FILE;
     fi
     echo "Qobuz Enable: $QOBUZ_ENABLE"
-    if [ "$QOBUZ_ENABLE" == "yes" ]; then
+    if [ "$QOBUZ_ENABLE" = true ]; then
         echo "Processing Qobuz settings";
         sed -i 's/\#qobuzuser/qobuzuser/g' $CONFIG_FILE;
         sed -i 's/\#qobuzpass/qobuzpass/g' $CONFIG_FILE;
