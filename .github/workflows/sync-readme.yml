@@ -38,5 +38,5 @@ jobs:
                 password: ${{ secrets.DOCKERHUB_PASSWORD }}
                 repository: ${{ env.DOCKERHUB_SLUG }}
                 readme-filepath: ./README.md
-                short-description: Mopidy music server with Iris Web-UI, Spotify support and many other extensions.
+                short-description: UPnP Audio Media Renderer based on MPD
                         
