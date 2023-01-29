@@ -56,35 +56,39 @@ VARIABLE|DEFAULT|NOTES
 ---|---|---
 MPD_HOST|localhost|The host where mpd runs
 MPD_PORT|6600|The port used by mpd
+MPD_PWD| | Passwort for mpd connection (if needed)
 UPMPD_FRIENDLY_NAME|upmpd|Name of the upnpd renderer
-AV_FRIENDLY_NAME|upmpd-av|Name of the upnpd renderer (av mode)
+UPNPAV_ENABLE|0|Enable UPnP AV services (0=deactivated, 1=activated)
+AV_FRIENDLY_NAME|upmpd-av|Name of the upnpd renderer (av-service mode)
+OPENHOME_ENABLE|1|Enable OpenHome services (0=deactivated, 1=activated)
 STARTUP_DELAY_SEC|0| Delay before starting the application. This can be useful if your container is set up to start automatically.
 ---|---|---
 DEEZER_ENABLE|false|Set to yes to enable Deezer support
-DEEZER_USERNAME|deezer_username|Your Deezer account username
-DEEZER_PASSWORD|deezer_password|Your Deezer account password
+DEEZER_USERNAME| |Your Deezer account username
+DEEZER_PASSWORD| |Your Deezer account password
 ---|---|---
 SPOTIFY_ENABLE|false|Set to yes to enable Spotify support
-SPOTIFY_USERNAME|spotify_username|Your Spotify account username
-SPOTIFY_PASSWORD|spotify_password|Your Spotify account password
-SPOTIFY_BITRATE|160|96, 160 or 320 
+SPOTIFY_USERNAME| |Your Spotify account username
+SPOTIFY_PASSWORD| |Your Spotify account password
+SPOTIFY_BITRATE|160|96, 160 or 320
 ---|---|---
 QOBUZ_ENABLE|false|Set to yes to enable Qobuz support
-QOBUZ_USERNAME|qobuz_username|Your Qobuz account username
-QOBUZ_PASSWORD|qobuz_password|Your Qobuz account password
+QOBUZ_USERNAME| |Your Qobuz account username
+QOBUZ_PASSWORD| |Your Qobuz account password
 QOBUZ_FORMAT_ID|5|Qobuz format id: 5 for mp3, 7 for FLAC, 27 for hi-res
 ---|---|---
 HRA_ENABLE|false|Set to yes to enable HRA support
-HRA_USERNAME|hra_username|Your HRA account username
-HRA_PASSWORD|hra_password|Your HRA account password
+HRA_USERNAME| |Your HRA account username
+HRA_PASSWORD| |Your HRA account password
 HRA_LANG|en|language setting (en/de)
 ---|---|---
 TIDAL_ENABLE|false|Set to yes to enable Tidal support
-TIDAL_USERNAME|tidal_username|Your Tidal account username
-TIDAL_PASSWORD|tidal_password|Your Tidal account password
-TIDAL_API_TOKEN|tidal_api_token|Your Tidal account API token
+TIDAL_USERNAME| |Your Tidal account username
+TIDAL_PASSWORD| |Your Tidal account password
+TIDAL_API_TOKEN| |Your Tidal account API token
 TIDAL_QUALITY|low|Tidal quality: low, high, lossless
 
+*Note: Values with spaces are only allowed in friendly name patterns.*
 <!-- 
 ### Currently Deprecated
 
