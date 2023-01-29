@@ -29,10 +29,7 @@ RUN apt-get update \
     curl \
     lsb-release \
     gpg \
-    dirmngr \
     ca-certificates \
-    git \
-    build-essential \
     sudo \
   && rm -rf /var/lib/apt/lists/*
 
@@ -61,6 +58,8 @@ RUN mkdir -p /usr/share/keyrings \
 #     software-properties-common \
 #   && add-apt-repository ppa:jean-francois-dockes/upnpp1 \
 #   && rm -rf /var/lib/apt/lists/*
+#   && apt-get remove -y \
+#	software-properties-common
 
 # Install packages
 RUN apt-get update \
@@ -71,7 +70,7 @@ RUN apt-get update \
 
 # Cleanup
 RUN apt-get remove -y \
-	software-properties-common \
+	lsb-release \
   && apt-get autoremove -y
 
 # Run and generate default config file
