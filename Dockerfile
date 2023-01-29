@@ -35,29 +35,31 @@ RUN apt-get update \
     sudo \
   && rm -rf /var/lib/apt/lists/*
 
+
+
 # ======
 # Install UPnP Media Renderer front-end for MPD
 #
-# Include upmpdcli official Repo
-# RUN mkdir -p /usr/share/keyrings \
-#   && wget -q -O /usr/share/keyrings/lesbonscomptes.gpg https://www.lesbonscomptes.com/pages/lesbonscomptes.gpg
-# ARG REPO_ARM=https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-rbuster.list
-# ARG REPO_AMD64=https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-buster.list
-# RUN if [ "$TARGETARCH" = "arm" ]; then \
-# 	wget -q -O /etc/apt/sources.list.d/upmpdcli.list $REPO_ARM ; \
-#     elif [ "$TARGETARCH" = "amd64" ]; then \
-#     	wget -q -O /etc/apt/sources.list.d/upmpdcli.list $REPO_AMD64 ; \
-#     else \
-# 	wget -q -O /etc/apt/sources.list.d/upmpdcli.list $REPO_AMD64 ; \
-#     fi
-    
-# Include additional PPA Repo
-RUN apt-get update \
-  && apt-get install -y \
-    software-properties-common \
-    exiftool \
-  && add-apt-repository ppa:jean-francois-dockes/upnpp1 \
-  && rm -rf /var/lib/apt/lists/*
+# Install upmpdcli from official Repo (DEBIAN)
+RUN mkdir -p /usr/share/keyrings \
+  #&& gpg --no-default-keyring --keyring /usr/share/keyrings/lesbonscomptes.gpg --keyserver keyserver.ubuntu.com --recv-key F8E3347256922A8AE767605B7808CE96D38B9201 \
+  && wget -q -O /usr/share/keyrings/lesbonscomptes.gpg https://www.lesbonscomptes.com/pages/lesbonscomptes.gpg \
+  && if [ "$TARGETARCH" = "arm" ]; then \
+      REPO_TARGET="raspbian"; \
+    elif [ "$TARGETARCH" = "amd64" ]; then \
+    	REPO_TARGET="debian"; \
+    else \
+      echo "Unknown Target in use with upmpdcli repository. Try amd64 debian as default." \
+	    && REPO_TARGET="debian"; \
+    fi \
+  && echo "deb [signed-by=/usr/share/keyrings/lesbonscomptes.gpg] http://www.lesbonscomptes.com/upmpdcli/downloads/${REPO_TARGET}/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/upmpdcli.list
+
+# # Install upmpdcli from PPA Repo (UBUNTU) 
+# RUN apt-get update \
+#   && apt-get install -y \
+#     software-properties-common \
+#   && add-apt-repository ppa:jean-francois-dockes/upnpp1 \
+#   && rm -rf /var/lib/apt/lists/*
 
 # Install packages
 RUN apt-get update \
