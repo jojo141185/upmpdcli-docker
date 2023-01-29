@@ -44,6 +44,8 @@ RUN mkdir -p /usr/share/keyrings \
   && wget -q -O /usr/share/keyrings/lesbonscomptes.gpg https://www.lesbonscomptes.com/pages/lesbonscomptes.gpg \
   && if [ "$TARGETARCH" = "arm" ]; then \
       REPO_TARGET="raspbian"; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+    	REPO_TARGET="raspbian"; \
     elif [ "$TARGETARCH" = "amd64" ]; then \
     	REPO_TARGET="debian"; \
     else \
